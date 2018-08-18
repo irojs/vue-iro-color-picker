@@ -2,12 +2,27 @@
   "name": "vue-iro-color-picker",
   "version": "1.0.0",
   "main": "dist/VueIroColorPicker.common.js",
+  "description": "Vue color picker",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shchepotin/vue-iro-color-picker.git"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build-lib": "./node_modules/.bin/vue-cli-service build --target lib --name VueIroColorPicker ./src/components/ColorPicker.vue",
     "lint": "vue-cli-service lint"
   },
+  "author": "Vladyslav Shchepotin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Shchepotin/vue-iro-color-picker/issues"
+  },
+  "keywords": [
+    "vue",
+    "color",
+    "picker"
+  ],
   "dependencies": {
     "vue": "^2.5.17",
     "@jaames/iro": "^3.5.1"
