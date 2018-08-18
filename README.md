@@ -1,5 +1,8 @@
 # Vue color picker
 
+## Demo
+See demo [here](https://codepen.io/Shchepotin/pen/ZMzERY?editors=1010)
+
 ## Install
 ```
 npm install vue-iro-color-picker --save
