@@ -1,6 +1,18 @@
-# vue-datetime-picker
+# Vue color picker
 
-## Project setup
+## Install
+```
+npm install vue-iro-color-picker --save
+```
+
+## Usage
+```javascript
+import ColorPicker from 'vue-iro-color-picker';
+
+Vue.component('color-picker', ColorPicker);
+```
+
+## Contribution
 ```
 npm install
 ```
@@ -18,4 +30,9 @@ npm run build
 ### Lints and fixes files
 ```
 npm run lint
+```
+
+### Build new version
+```
+npm run build-lib
 ```
