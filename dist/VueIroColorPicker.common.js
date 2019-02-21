@@ -144,21 +144,6 @@ module.exports = __webpack_require__("9e1e") ? Object.defineProperties : functio
 
 /***/ }),
 
-/***/ "1eb2":
-/***/ (function(module, exports, __webpack_require__) {
-
-// This file is imported into lib/wc client bundles.
-
-if (typeof window !== 'undefined') {
-  var i
-  if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js$/))) {
-    __webpack_require__.p = i[1] // eslint-disable-line
-  }
-}
-
-
-/***/ }),
-
 /***/ "230e":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -180,8 +165,8 @@ var global = __webpack_require__("7726");
 var hide = __webpack_require__("32e9");
 var has = __webpack_require__("69a8");
 var SRC = __webpack_require__("ca5a")('src');
+var $toString = __webpack_require__("fa5b");
 var TO_STRING = 'toString';
-var $toString = Function[TO_STRING];
 var TPL = ('' + $toString).split(TO_STRING);
 
 __webpack_require__("8378").inspectSource = function (it) {
@@ -343,7 +328,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__("2d00") ? 'pure' : 'global',
-  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -527,7 +512,7 @@ module.exports = function (exec) {
 /***/ "8378":
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.5' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -899,6 +884,14 @@ module.exports = (
 
 /***/ }),
 
+/***/ "fa5b":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__("5537")('native-function-to-string', Function.toString);
+
+
+/***/ }),
+
 /***/ "fab2":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -914,10 +907,20 @@ module.exports = document && document.documentElement;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
-var setPublicPath = __webpack_require__("1eb2");
+// CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
+// This file is imported into lib/wc client bundles.
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"db82b1c6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ColorPicker.vue?vue&type=template&id=667aa7ba&
+if (typeof window !== 'undefined') {
+  var i
+  if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
+    __webpack_require__.p = i[1] // eslint-disable-line
+  }
+}
+
+// Indicate to webpack that this file can be concatenated
+/* harmony default export */ var setPublicPath = (null);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"66bcdb1a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ColorPicker.vue?vue&type=template&id=667aa7ba&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"color-picker"},[_c('div',{attrs:{"id":"color-picker"}})])}]
 
@@ -929,7 +932,7 @@ var es6_number_constructor = __webpack_require__("c5f6");
 
 // CONCATENATED MODULE: ./node_modules/@jaames/iro/dist/iro.es.js
 /*!
- * iro.js v3.5.1
+ * iro.js v3.5.6
  * 2016-2018 James Daniel
  * Released under the MIT License
  * github.com/jaames/iro.js
@@ -1399,9 +1402,9 @@ color.parseHexStr = function parseHexStr (hex) {
 color.parseHslStr = function parseHslStr (str) {
   var parsed = parseColorStr(str, [360, 100, 100]);
   return {
-    h: parsed[2],
-    s: parsed[3],
-    l: parsed[4]
+    h: parsed[1],
+    s: parsed[2],
+    l: parsed[3]
   };
 };
 /**
@@ -1711,11 +1714,12 @@ var SVG_TRANSFORM_SHORTHANDS = {
   translate: "setTranslate",
   scale: "setScale",
   rotate: "setRotate"
-}; // sniff useragent string to check if the user is running IE, Edge or Safari
+}; // sniff useragent string to check if the user is running IE, Edge or iOS Safari / webview
 
 var ua = window.navigator.userAgent.toLowerCase();
 var IS_IE = /msie|trident|edge/.test(ua);
 var IS_SAFARI = /^((?!chrome|android).)*safari/i.test(ua);
+var IS_IOS = /iPhone|iPod|iPad/i.test(ua);
 
 var svgElement = function svgElement(root, parent, type, attrs) {
   var el = document.createElementNS(SVG_NAMESPACE, type);
@@ -1860,7 +1864,8 @@ var svgGradient = function svgGradient(root, type, stops) {
 };
 
 svgGradient.prototype.getUrl = function getUrl (base) {
-  var root = IS_SAFARI ? base || window.location.href : "";
+  var loc = location;
+  var root = IS_SAFARI || IS_IOS ? base || loc.protocol + "//" + loc.host + loc.pathname + loc.search : "";
   return "url(" + root + "#" + this.el.id + ")";
 };
 
@@ -1889,7 +1894,7 @@ var svgRoot = (function (svgElement) {
   };
 
   svgRoot.prototype.updateUrls = function updateUrls (base) {
-    if (IS_SAFARI) {
+    if (IS_SAFARI || IS_IOS) {
       var gradients = this._gradients;
 
       for (var i = 0; i < gradients.length; i++) {
@@ -2086,8 +2091,17 @@ colorPicker.prototype._mount = function _mount (el, opts) {
   el = "string" == typeof el ? document.querySelector(el) : el; // Find the width and height for the UI
   // If not defined in the options, try the HTML width + height attributes of the wrapper, else default to 320
 
-  var width = opts.width || parseInt(el.width) || 320;
-  var height = opts.height || parseInt(el.height) || 320; // Calculate layout variables
+  var elWidth = parseInt(getComputedStyle(el).width);
+  var elHeight = parseInt(getComputedStyle(el).height); //choose the smallest side of the container
+
+  if (elHeight < elWidth && elHeight != 0) {
+    elWidth = elHeight;
+  } else if (elWidth != 0) {
+    elHeight = elWidth;
+  }
+
+  var width = opts.width || elWidth || 320;
+  var height = opts.height || elHeight || 320; // Calculate layout variables
 
   var padding = opts.padding + 2 || 6,
       borderWidth = opts.borderWidth || 0,
@@ -2284,12 +2298,12 @@ var iro = {
   Color: color,
   ColorPicker: colorPicker,
   Stylesheet: stylesheet,
-  version: "3.5.1"
+  version: "3.5.6"
 };
 
 /* harmony default export */ var iro_es = (iro);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ColorPicker.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ColorPicker.vue?vue&type=script&lang=js&
 
 //
 //
@@ -2505,7 +2519,6 @@ var component = normalizeComponent(
   
 )
 
-component.options.__file = "ColorPicker.vue"
 /* harmony default export */ var ColorPicker = (component.exports);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
 
