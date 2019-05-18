@@ -1,6 +1,6 @@
 {
   "name": "vue-iro-color-picker",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "main": "dist/VueIroColorPicker.common.js",
   "description": "Vue color picker",
   "repository": {
@@ -25,13 +25,13 @@
   ],
   "dependencies": {
     "@jaames/iro": "^3.5.6",
-    "vue": "^2.6.6"
+    "vue": "^2.6.10"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.1",
-    "@vue/cli-plugin-eslint": "^3.4.1",
-    "@vue/cli-service": "^3.4.1",
-    "vue-template-compiler": "^2.6.6"
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-eslint": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
     "root": true,

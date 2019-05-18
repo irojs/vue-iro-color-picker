@@ -1,5 +1,7 @@
 # Vue color picker
 
+[Iro color picker](https://iro.js.org/) for Vue.
+
 ## Demo
 See demo [here](https://codepen.io/Shchepotin/pen/ZMzERY?editors=1010)
 

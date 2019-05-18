@@ -1,6 +1,17 @@
 <template>
   <div id="app">
-    <color-picker v-model="color" />
+    <button
+        type="button"
+        @click="toggle = !toggle"
+    >
+      {{ toggle ? 'Hide' : 'Show' }}
+    </button>
+
+    <color-picker
+        ref="picker"
+        v-if="toggle"
+        v-model="color"
+    />
   </div>
 </template>
 
@@ -14,6 +25,7 @@ export default {
   },
   data() {
     return {
+        toggle: true,
         color: '',
     }
   }
