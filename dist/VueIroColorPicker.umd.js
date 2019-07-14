@@ -893,6 +893,49 @@ module.exports = (
 
 /***/ }),
 
+/***/ "f6fd":
+/***/ (function(module, exports) {
+
+// document.currentScript polyfill by Adam Miller
+
+// MIT license
+
+(function(document){
+  var currentScript = "currentScript",
+      scripts = document.getElementsByTagName('script'); // Live NodeList collection
+
+  // If browser needs currentScript polyfill, add get currentScript() to the document object
+  if (!(currentScript in document)) {
+    Object.defineProperty(document, currentScript, {
+      get: function(){
+
+        // IE 6-10 supports script readyState
+        // IE 10+ support stack trace
+        try { throw new Error(); }
+        catch (err) {
+
+          // Find the second match for the "at" string to get file src url from stack.
+          // Specifically works with the format of stack traces in IE.
+          var i, res = ((/.*at [^\(]*\((.*):.+:.+\)$/ig).exec(err.stack) || [false])[1];
+
+          // For all scripts on the page, if src matches or if ready state is interactive, return the script tag
+          for(i in scripts){
+            if(scripts[i].src == res || scripts[i].readyState == "interactive"){
+              return scripts[i];
+            }
+          }
+
+          // If no match, return null
+          return null;
+        }
+      }
+    });
+  }
+})(document);
+
+
+/***/ }),
+
 /***/ "fa5b":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -920,6 +963,10 @@ __webpack_require__.r(__webpack_exports__);
 // This file is imported into lib/wc client bundles.
 
 if (typeof window !== 'undefined') {
+  if (true) {
+    __webpack_require__("f6fd")
+  }
+
   var i
   if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
     __webpack_require__.p = i[1] // eslint-disable-line
@@ -929,12 +976,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"66bcdb1a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ColorPicker.vue?vue&type=template&id=667aa7ba&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _vm._m(0)}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"color-picker"},[_c('div',{attrs:{"id":"color-picker"}})])}]
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"b86ab970-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ColorPicker.vue?vue&type=template&id=4ac327d1&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"picker"})}
+var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/ColorPicker.vue?vue&type=template&id=667aa7ba&
+// CONCATENATED MODULE: ./src/components/ColorPicker.vue?vue&type=template&id=4ac327d1&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
 var es6_number_constructor = __webpack_require__("c5f6");
@@ -2318,8 +2365,6 @@ var iro = {
 //
 //
 //
-//
-//
 
 /* harmony default export */ var ColorPickervue_type_script_lang_js_ = ({
   props: {
@@ -2329,17 +2374,30 @@ var iro = {
     },
     width: {
       type: Number,
-      default: 320
+      default: 300
     },
     height: {
       type: Number,
-      default: 320
+      default: 300
+    },
+    handleSvg: {
+      type: String,
+      default: null
+    },
+    handleOrigin: {
+      type: Object,
+      default: function _default() {
+        return {
+          x: 0,
+          y: 0
+        };
+      }
     },
     padding: {
       type: Number,
       default: 6
     },
-    markerRadius: {
+    handleRadius: {
       type: Number,
       default: 8
     },
@@ -2363,13 +2421,21 @@ var iro = {
       type: String,
       default: 'block'
     },
-    anticlockwise: {
-      type: Boolean,
-      default: false
+    layout: {
+      type: String,
+      default: 'block'
+    },
+    wheelAngle: {
+      type: Number,
+      default: 0
+    },
+    wheelDirection: {
+      type: String,
+      default: 'anticlockwise'
     },
     wheelLightness: {
       type: Boolean,
-      default: undefined
+      default: true
     },
     css: {
       type: Object,
@@ -2378,31 +2444,90 @@ var iro = {
   },
   data: function data() {
     return {
-      colorPicker: null,
-      oldValue: this.value
+      colorPicker: null
     };
   },
+  methods: {
+    onInput: function onInput(color) {
+      this.$emit('input', color.hexString);
+    },
+    onColorChange: function onColorChange(color, changes) {
+      this.$emit('color:change', {
+        color: color,
+        changes: changes
+      });
+    },
+    onColorInit: function onColorInit(color, changes) {
+      this.$emit('color:init', {
+        color: color,
+        changes: changes
+      });
+    },
+    onInputChange: function onInputChange(color, changes) {
+      this.$emit('input:change', {
+        color: color,
+        changes: changes
+      });
+    },
+    onInputStart: function onInputStart(color) {
+      this.$emit('input:start', {
+        color: color
+      });
+    },
+    onInputMove: function onInputMove(color) {
+      this.$emit('input:move', {
+        color: color
+      });
+    },
+    onInputEnd: function onInputEnd(color) {
+      this.$emit('input:end', {
+        color: color
+      });
+    },
+    onMount: function onMount(colorPicker) {
+      this.$emit('mount', {
+        colorPicker: colorPicker
+      });
+    }
+  },
   mounted: function mounted() {
-    var _this = this;
-
-    this.colorPicker = new iro_es.ColorPicker("#color-picker", {
+    this.colorPicker = new iro_es.ColorPicker(this.$refs.picker, {
       width: this.width,
       height: this.height,
+      handleSvg: this.handleSvg,
       color: this.value,
       padding: this.padding,
-      markerRadius: this.markerRadius,
+      layout: this.layout,
+      display: this.display,
+      css: this.css,
+      wheelDirection: this.wheelDirection,
+      wheelAngle: this.wheelAngle,
+      wheelLightness: this.wheelLightness,
+      handleOrigin: this.handleOrigin,
+      handleRadius: this.handleRadius,
       sliderMargin: this.sliderMargin,
       sliderHeight: this.sliderHeight,
       borderWidth: this.borderWidth,
-      borderColor: this.borderColor,
-      display: this.display,
-      anticlockwise: this.anticlockwise,
-      wheelLightness: this.wheelLightness,
-      css: this.css
+      borderColor: this.borderColor
     });
-    this.colorPicker.on("color:change", function (color) {
-      _this.$emit('input', color.hexString);
-    });
+    this.colorPicker.on('input:end', this.onInput);
+    this.colorPicker.on('color:change', this.onColorChange);
+    this.colorPicker.on('color:init', this.onColorInit);
+    this.colorPicker.on('input:change', this.onInputChange);
+    this.colorPicker.on('input:start', this.onInputStart);
+    this.colorPicker.on('input:move', this.onInputMove);
+    this.colorPicker.on('input:end', this.onInputEnd);
+    this.colorPicker.on('mount', this.onMount);
+  },
+  beforeUnmount: function beforeUnmount() {
+    this.colorPicker.off('input:end', this.onInput);
+    this.colorPicker.off('color:change', this.onColorChange);
+    this.colorPicker.off('color:init', this.onColorInit);
+    this.colorPicker.off('input:change', this.onInputChange);
+    this.colorPicker.off('input:start', this.onInputStart);
+    this.colorPicker.off('input:move', this.onInputMove);
+    this.colorPicker.off('input:end', this.onInputEnd);
+    this.colorPicker.off('mount', this.onMount);
   },
   watch: {
     value: function value(newValue) {
